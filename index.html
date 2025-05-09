@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Map Dashboard</title>
+    <link
+      href="libs/bootstrap-5.1.3-dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="libs/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="libs/jquery.js"></script>
+    <script src="libs/v6.13.0-dist/ol.js"></script>
+    <link rel="stylesheet" href="libs/v6.13.0-dist/ol.css" />
+    <script src="libs/ol-layerswitcher-master/dist/ol-layerswitcher.js"></script>
+    <link
+      rel="stylesheet"
+      href="libs/ol-layerswitcher-master/dist/ol-layerswitcher.css"
+    />
+    <script src="libs/ol-geocoder/ol-geocoder.js"></script>
+    <link rel="stylesheet" href="libs/ol-geocoder/ol-geocoder.css" />
+    <script src="libs/ol-popup/ol-popup.js"></script>
+    <link rel="stylesheet" href="libs/ol-popup/ol-popup.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 sidebar">
+          <h3 class="sidebar-title">Interactive Map Dashboard</h3>
+          <div class="mb-3">
+            <label for="serverUrl" class="form-label"><b>Server URL:</b></label>
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              id="serverUrl"
+              value="http://localhost:8080/geoserver/web/"
+            />
+            <button
+              onclick="loadCapabilities()"
+              class="btn btn-primary btn-sm mt-2"
+            >
+              GetCapabilities
+            </button>
+          </div>
+          <div class="accordion" id="gisToolsAccordion">
+            <!-- WFS Section -->
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="wfsHeading">
+                <button
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#wfsCollapse"
+                  aria-expanded="true"
+                  aria-controls="wfsCollapse"
+                >
+                  WFS
+                </button>
+              </h2>
+              <div
+                id="wfsCollapse"
+                class="accordion-collapse collapse show"
+                aria-labelledby="wfsHeading"
+                data-bs-parent="#gisToolsAccordion"
+              >
+                <div class="accordion-body">
+                  <label for="layer" class="form-label"
+                    ><b>Select Layer</b></label
+                  >
+                  <select
+                    id="layer"
+                    class="form-select form-select-sm"
+                  ></select>
+                  <label for="attributes" class="form-label"
+                    ><b>Select Attribute</b></label
+                  >
+                  <select
+                    id="attributes"
+                    class="form-select form-select-sm"
+                  ></select>
+                  <label for="operator" class="form-label"
+                    ><b>Select Operator</b></label
+                  >
+                  <select
+                    id="operator"
+                    class="form-select form-select-sm"
+                  ></select>
+                  <label for="value" class="form-label"
+                    ><b>Enter Value</b></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    id="value"
+                  />
+                  <button onclick="query()" class="btn btn-danger btn-sm mt-2">
+                    Load Layer
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- WMS Section -->
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="wmsHeading">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#wmsCollapse"
+                  aria-expanded="false"
+                  aria-controls="wmsCollapse"
+                >
+                  WMS
+                </button>
+              </h2>
+              <div
+                id="wmsCollapse"
+                class="accordion-collapse collapse"
+                aria-labelledby="wmsHeading"
+                data-bs-parent="#gisToolsAccordion"
+              >
+                <div class="accordion-body">
+                  <button
+                    onclick="wms_layers()"
+                    id="wms_layers_btn"
+                    class="btn btn-success btn-sm"
+                  >
+                    Available WMS Layers
+                  </button>
+                  <div class="mt-3">
+                    <label class="form-label"
+                      ><b>Bounding Box (Optional)</b></label
+                    >
+                    <div class="row">
+                      <div class="col">
+                        <input
+                          type="number"
+                          class="form-control form-control-sm"
+                          id="minX"
+                          placeholder="Min Longitude"
+                          step="0.01"
+                        />
+                      </div>
+                      <div class="col">
+                        <input
+                          type="number"
+                          class="form-control form-control-sm"
+                          id="minY"
+                          placeholder="Min Latitude"
+                          step="0.01"
+                        />
+                      </div>
+                    </div>
+                    <div class="row mt-2">
+                      <div class="col">
+                        <input
+                          type="number"
+                          class="form-control form-control-sm"
+                          id="maxX"
+                          placeholder="Max Longitude"
+                          step="0.01"
+                        />
+                      </div>
+                      <div class="col">
+                        <input
+                          type="number"
+                          class="form-control form-control-sm"
+                          id="maxY"
+                          placeholder="Max Latitude"
+                          step="0.01"
+                        />
+                      </div>
+                    </div>
+                    <button
+                      onclick="add_layer_with_bbox()"
+                      class="btn btn-primary btn-sm mt-2"
+                    >
+                      Load with Bounding Box
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Map and Layer Details -->
+        <div class="col-md-9">
+          <div id="map" class="map">
+            <div id="scale_bar"></div>
+            <div id="scale_bar1"></div>
+            <div class="toolbar">
+              <button
+                onclick="clear_all()"
+                id="clear_btn"
+                class="btn btn-warning btn-sm"
+              >
+                Clear
+              </button>
+              <button
+                onclick="info()"
+                id="info_btn"
+                class="btn btn-success btn-sm"
+              >
+                ☰ Activate GetInfo
+              </button>
+              <button
+                onclick="show_hide_legend()"
+                id="legend_btn"
+                class="btn btn-success btn-sm"
+              >
+                ☰ Show Legend
+              </button>
+            </div>
+            <div id="legend"></div>
+          </div>
+          <div id="layerDetails" class="layer-details">
+            <nav>
+              <div class="nav nav-tabs" id="detailsTab" role="tablist">
+                <button
+                  class="nav-link"
+                  id="properties-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#layerProperties"
+                  type="button"
+                  role="tab"
+                  aria-controls="layerProperties"
+                  aria-selected="false"
+                >
+                  Layer Properties
+                </button>
+                <button
+                  class="nav-link active"
+                  id="query-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#queryResults"
+                  type="button"
+                  role="tab"
+                  aria-controls="queryResults"
+                  aria-selected="true"
+                >
+                  Query Results
+                </button>
+              </div>
+            </nav>
+            <div class="tab-content" id="detailsTabContent">
+              <div
+                class="tab-pane fade show active"
+                id="queryResults"
+                role="tabpanel"
+                aria-labelledby="query-tab"
+              >
+                <div id="table_data"></div>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="layerProperties"
+                role="tabpanel"
+                aria-labelledby="properties-tab"
+              >
+                <div id="layer_properties"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- WMS Layers Modal -->
+    <div
+      class="modal fade"
+      id="wms_layers_window"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="staticBackdropLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">
+              Available WMS Layers
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <table id="table_wms_layers" class="table table-hover"></table>
+          </div>
+          <div class="modal-footer">
+            <button
+              onclick="close_wms_window()"
+              type="button"
+              class="btn btn-secondary btn-sm"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              onclick="add_layer()"
+              type="button"
+              id="add_map_btn"
+              class="btn btn-primary btn-sm"
+            >
+              Add Layer to Map
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="map.js"></script>
+  </body>
+</html>

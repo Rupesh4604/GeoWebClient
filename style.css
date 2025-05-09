@@ -1,0 +1,298 @@
+/* Geocoder Control (Updated with Higher Specificity and Constraints) */
+.map .ol-geocoder.gcd-gl-container {
+    top: 5em !important;
+    /* Moved higher to avoid zoomslider overlap */
+    left: 0.5em !important;
+    position: absolute !important;
+    width: 160px !important;
+    /* Further reduced to minimize impact */
+    max-height: 35px !important;
+    /* Tighter height constraint */
+    z-index: 1000 !important;
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid #4CAF50 !important;
+    border-radius: 5px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    overflow: hidden !important;
+    padding: 2px !important;
+    pointer-events: auto !important;
+    /* Ensure clicks pass through when not interacting */
+}
+
+/* Geocoder Input */
+.map .ol-geocoder.gcd-gl-container input {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    border-radius: 4px !important;
+    padding: 4px !important;
+    font-size: 13px !important;
+    box-sizing: border-box !important;
+    /* Ensure padding doesn’t increase size */
+}
+
+/* Geocoder Dropdown (Stricter Control) */
+.map .ol-geocoder.gcd-gl-container ul {
+    max-height: 150px !important;
+    /* Reduced max height for dropdown */
+    overflow-y: auto !important;
+    width: 160px !important;
+    /* Match container width */
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #4CAF50 !important;
+    border-radius: 0 0 5px 5px !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+    z-index: 1001 !important;
+    pointer-events: auto !important;
+    /* Allow interaction with dropdown */
+}
+
+/* Zoom Slider Adjustment */
+.ol-zoomslider {
+    top: 6.5em !important;
+    /* Adjusted to fit below geocoder */
+}
+
+/* Ensure Map is Interactive */
+.map {
+    touch-action: auto !important;
+    /* Allow panning and zooming on touch devices */
+    pointer-events: auto !important;
+    /* Ensure map receives click events */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .map .ol-geocoder.gcd-gl-container {
+        width: 130px !important;
+        top: 4em !important;
+    }
+
+    .ol-zoomslider {
+        top: 5.5em !important;
+    }
+}
+
+/* Reset and Base Styles */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+}
+
+/* Container */
+.container-fluid {
+    height: 100%;
+}
+
+/* Sidebar */
+.sidebar {
+    height: 100vh;
+    background-color: #ffffff;
+    padding: 20px;
+    overflow-y: auto;
+    border-right: 2px solid #4CAF50;
+    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-title {
+    color: #4CAF50;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.sidebar .form-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.sidebar .form-control,
+.sidebar .form-select {
+    margin-bottom: 10px;
+    border: 1px solid #4CAF50;
+    border-radius: 4px;
+    padding: 8px;
+}
+
+/* Map */
+.map {
+    width: 100%;
+    height: 70vh;
+    position: relative;
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Toolbar */
+.toolbar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}
+
+.toolbar button {
+    margin-left: 5px;
+}
+
+/* Scale Bars */
+#scale_bar {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: #ffffff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#scale_bar1 {
+    position: absolute;
+    bottom: 40px;
+    left: 10px;
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+/* Legend */
+#legend {
+    position: absolute;
+    bottom: 10px;
+    right: 0;
+    width: 0;
+    height: 50%;
+    background-color: #ffffff;
+    padding: 10px;
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+    overflow-y: auto;
+    visibility: hidden;
+    transition: width 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Layer Details */
+.layer-details {
+    height: 30vh;
+    padding: 15px;
+    background-color: #ffffff;
+    border-top: 2px solid #4CAF50;
+    overflow-y: auto;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#table_data,
+#layer_properties {
+    width: 100%;
+}
+
+#table,
+#properties_table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#table th,
+#properties_table th {
+    background-color: #4CAF50;
+    color: #ffffff;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid #2e7d32;
+    position: sticky;
+    top: 0;
+}
+
+#table td,
+#properties_table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Buttons */
+.btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-success {
+    background: linear-gradient(90deg, #4CAF50, #2e7d32);
+    border: none;
+}
+
+.btn-success:hover {
+    background: linear-gradient(90deg, #45a049, #1a5e1a);
+    transform: scale(1.05);
+}
+
+.btn-danger {
+    background: linear-gradient(90deg, #ff9800, #f57c00);
+    border: none;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(90deg, #fb8c00, #e65100);
+    transform: scale(1.05);
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #4CAF50, #2e7d32);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(90deg, #45a049, #1a5e1a);
+    transform: scale(1.05);
+}
+
+/* Modal */
+.modal-dialog {
+    max-width: 70%;
+    height: 70%;
+    top: 15%;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content {
+    border: none;
+    border-radius: 10px;
+}
+
+.modal-header {
+    background-color: #4CAF50;
+    color: #ffffff;
+    border-radius: 10px 10px 0 0;
+}
+
+.modal-footer {
+    background-color: #f0f4f0;
+    border-radius: 0 0 10px 10px;
+}
+
+/* OpenLayers Controls */
+.ol-control button {
+    background-color: rgba(76, 175, 80, 0.8) !important;
+    border-radius: 50%;
+}
+
+.ol-control button:hover {
+    background-color: rgba(46, 125, 50, 1) !important;
+    transform: scale(1.1);
+}
+
+.sidebar .row .form-control {
+    margin-bottom: 5px;
+    /* Tighten spacing */
+}
