@@ -47,8 +47,11 @@ A client-server-based interoperable Geographic Information System (GIS) for visu
 ## 📂 Project Structure
   
   ├── index.html # Main dashboard layout and UI structure
+  
   ├── map.js # All JavaScript map logic and event handling
+  
   ├── style.css # Custom styles and OpenLayers overrides
+  
   ├── libs/ # External libraries (Bootstrap, OL, plugins)
 
 
